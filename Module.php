@@ -52,6 +52,8 @@ use Zend\Cache\Storage\StorageInterface;
 
 class Module
 {
+    const CACHE_PREFIX = 'slm_cache';
+
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -62,8 +64,8 @@ class Module
         $app = $e->getApplication();
         $em  = $app->getEventManager();
 
-        $em->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkRoute'));
-        $em->attach(MvcEvent::EVENT_FINISH, array($this, 'saveRoute'));
+        $em->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkRoute'), -1000);
+        $em->attach(MvcEvent::EVENT_FINISH, array($this, 'saveRoute'), 1000);
     }
 
     public function checkRoute(MvcEvent $e)
@@ -80,7 +82,7 @@ class Module
             return;
         }
 
-        $result = $this->getFromCache($e, $route, $routes[$route]);
+        $result = $this->fromCache($e, $route, $routes[$route]);
         if (!$result instanceof Response) {
             return;
         }
@@ -90,20 +92,54 @@ class Module
 
     public function saveRoute(MvcEvent $e)
     {
+        $match = $e->getRouteMatch();
+        if (!$match instanceof RouteMatch) {
+            return;
+        }
 
+        // Page is just retrieved from cache, no need to store this
+        if (true === $e->getParam('cached')) {
+            return;
+        }
+
+        $route  = $match->getMatchedRouteName();
+        $config = $e->getApplication()->getServiceManager()->get('Config');
+        $routes = $config['slm_cache']['routes'];
+
+        if (!array_key_exists($route, $routes)) {
+            return;
+        }
+
+        $result = $this->storeCache($e, $route, $routes[$route]);
+        if (!$result instanceof Response) {
+            return;
+        }
+
+        return $result;
     }
 
-    protected function getFromCache(MvcEvent $e, $key, array $config = array())
+    protected function fromCache(MvcEvent $e, $key, array $config = array())
     {
         $cache = $this->getCache($e);
-        if ($result = $cache->getItem($key)) {
+
+        if ($result = $cache->getItem(self::CACHE_PREFIX . $key)) {
             $response = $e->getResponse();
-            $response->setBody($result);
+            $response->setContent($result);
+            $response->getHeaders()->addHeaderLine('X-SlmCache', 'From-Cache');
 
             $e->setParam('cached', true);
 
             return $response;
         }
+    }
+
+    protected function storeCache(MvcEvent $e, $key, array $config = array())
+    {
+        $cache = $this->getCache($e);
+
+        $response = $e->getResponse();
+        $response->getHeaders()->addHeaderLine('X-SlmCache', 'Stored-Cache');
+        $cache->setItem(self::CACHE_PREFIX . $key, $response->getContent());
     }
 
     protected function getCache(MvcEvent $e)
