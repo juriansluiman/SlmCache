@@ -1,0 +1,31 @@
+{
+    "name": "slm/cache",
+    "description": "Zend Framework 2 module to enable route based page caching",
+    "license": "BSD-3-Clause",
+    "type": "library",
+    "keywords": [
+        "zf2",
+        "route",
+        "cache"
+    ],
+    "homepage": "https://github.com/juriansluiman/SlmCache",
+    "authors": [
+        {
+            "name": "Jurian Sluiman",
+            "email": "jurian@soflomo.com",
+            "homepage": "http://soflomo.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3.",
+        "zendframework/zendframework": ">=2.0.0,<2.3.0-dev"
+    },
+    "autoload": {
+        "psr-0": {
+            "SlmCache": "src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}
