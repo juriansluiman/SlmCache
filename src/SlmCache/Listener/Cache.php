@@ -114,6 +114,27 @@ class Cache extends AbstractListenerAggregate
         }
         $config = (array) $routes[$route];
 
+        // Match HTTP request method to configured methods
+        if (array_key_exists('match_method', $config)) {
+            $methods = (array) $config['match_method'];
+            $method  = $e->getRequest()->getMethod();
+
+            if (in_array($method, $methods)) {
+                return;
+            }
+        }
+
+        // Match route request parameters to configured parameters
+        if (array_key_exists('match_route_params', $config)) {
+            $params = (array) $config['match_route_params'];
+
+            foreach ($params as $name => $value) {
+                if ($value !== $match->getParam($name)) {
+                    return;
+                }
+            }
+        }
+
         $match  = array('route' => $route, 'config' => $config);
         $this->match = $match;
 
