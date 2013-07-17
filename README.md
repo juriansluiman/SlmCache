@@ -87,7 +87,7 @@ You can also match multiple methods, if you need to:
 ),
 ```
 
-## Match only routes with specified route parameters
+### Match only routes with specified route parameters
 If you have a segment route where a part in the route sets the action, you might want to only cache a specific action. For the route `foo[/:action]` you might want to cache the match where `action` is `bar` but not for the `action` equals to `baz`. Use the `match_route_params` flag to configure this filtering:
 
 ```php
