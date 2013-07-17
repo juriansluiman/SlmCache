@@ -129,7 +129,13 @@ class Cache extends AbstractListenerAggregate
             $params = (array) $config['match_route_params'];
 
             foreach ($params as $name => $value) {
-                if ($value !== $match->getParam($name)) {
+                // There is a specific route parameter
+                if (is_string($value) && $value !== $match->getParam($name)) {
+                    return;
+                }
+
+                // There are multiple values possible
+                if (is_array($value) && !in_array($match->getParam($name), $value)) {
                     return;
                 }
             }
