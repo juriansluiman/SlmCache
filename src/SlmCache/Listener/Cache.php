@@ -156,12 +156,12 @@ class Cache extends AbstractListenerAggregate
         $response = $e->getResponse();
         if ($result = $cache->getItem($key)) {
             $response->setContent($result);
-            $response->getHeaders()->addHeaderLine('X-SlmCache-Fetch', 'Success; ' . $key);
+            $response->getHeaders()->addHeaderLine('X-Slm-Cache', 'Fetch: Hit; route=' . $match['route']);
 
             $e->setParam('cached', true);
             return $response;
         } else {
-            $response->getHeaders()->addHeaderLine('X-SlmCache-Fetch', 'Miss; ' . $key);
+            $response->getHeaders()->addHeaderLine('X-Slm-Cache', 'Fetch: Miss; route=' . $match['route']);
         }
     }
 
@@ -172,7 +172,7 @@ class Cache extends AbstractListenerAggregate
         $cache  = $this->getCache($e);
 
         $response = $e->getResponse();
-        $response->getHeaders()->addHeaderLine('X-SlmCache-Store', 'Success; ' . $key);
+        $response->getHeaders()->addHeaderLine('X-Slm-Cache', 'Storage: Success; route=' . $match['route']);
         $cache->setItem($key, $response->getContent());
     }
 
