@@ -1,6 +1,9 @@
 SlmCache
 ========
 
+[![Build Status](https://travis-ci.org/juriansluiman/SlmCache.png?branch=master)](https://travis-ci.org/juriansluiman/SlmCache)
+[![Latest Stable Version](https://poser.pugx.org/slm/cache/v/stable.png)](https://packagist.org/packages/slm/mail)
+
 Version 0.1.0 Created by Jurian Sluiman
 
 Requirements
