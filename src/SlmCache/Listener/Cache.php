@@ -119,7 +119,7 @@ class Cache extends AbstractListenerAggregate
             $methods = (array) $config['match_method'];
             $method  = $e->getRequest()->getMethod();
 
-            if (in_array($method, $methods)) {
+            if (!in_array($method, $methods)) {
                 return;
             }
         }
