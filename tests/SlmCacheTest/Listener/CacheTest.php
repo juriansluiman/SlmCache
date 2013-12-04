@@ -143,9 +143,7 @@ class CacheTest extends TestCase
     {
         $config = array(
             'slm_cache' => array(
-                'cache' => array(
-                    'cache_prefix' => 'my_cache_prefix'
-                ),
+                'cache_prefix' => 'my_cache_prefix'
             )
         );
 
@@ -155,7 +153,7 @@ class CacheTest extends TestCase
         $listener = new CacheListener($sl);
 
         $this->assertEquals(
-            $config['slm_cache']['cache']['cache_prefix'],
+            $config['slm_cache']['cache_prefix'],
             PHPUnit_Framework_Assert::readAttribute($listener, 'cache_prefix')
         );
     }

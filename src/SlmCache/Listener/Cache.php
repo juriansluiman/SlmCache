@@ -62,8 +62,8 @@ class Cache extends AbstractListenerAggregate
 
         $config = $sl->get('Config');
 
-        if (isset($config['slm_cache']['cache']['cache_prefix'])) {
-            $this->cache_prefix = $config['slm_cache']['cache']['cache_prefix'];
+        if (isset($config['slm_cache']['cache_prefix'])) {
+            $this->cache_prefix = $config['slm_cache']['cache_prefix'];
         }
     }
 

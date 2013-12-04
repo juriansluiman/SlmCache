@@ -58,9 +58,7 @@ Cache prefix is used to namespace cached data so it will not conflict with other
 
 ```php
 'slm_cache' => array(
-    'cache' => array(
-        'cache_prefix' => 'my_cache_prefix_',
-    ),
+    'cache_prefix' => 'my_cache_prefix_',
 );
 ```
 
