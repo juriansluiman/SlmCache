@@ -2,7 +2,7 @@ SlmCache
 ========
 
 [![Build Status](https://travis-ci.org/juriansluiman/SlmCache.png?branch=master)](https://travis-ci.org/juriansluiman/SlmCache)
-[![Latest Stable Version](https://poser.pugx.org/slm/cache/v/stable.png)](https://packagist.org/packages/slm/mail)
+[![Latest Stable Version](https://poser.pugx.org/slm/cache/v/stable.png)](https://packagist.org/packages/slm/cache)
 
 Version 0.1.0 Created by Jurian Sluiman
 
@@ -52,6 +52,19 @@ In this example, the configuration is simply a string and points to a service. T
     'cache'  => 'my-cache-adapter'
 ),
 ```
+
+### Configure cache prefix
+Cache prefix is used to namespace cached data so it will not conflict with other modules. Ideally it should be unique.
+
+```php
+'slm_cache' => array(
+    'cache' => array(
+        'cache_prefix' => 'my_cache_prefix_',
+    ),
+);
+```
+
+In case you don't specify a cache_prefix, SlmCache will default to 'slm_cache_'.
 
 ### Configure routes to be cached
 The routes which can be cached must be configured in a single array. SlmCache will match the currently matched route name to this list of routes. If there is a match, the caching mechanism will be enabled. This allows you to have non-cached and cached routes inside a single application.

@@ -40,6 +40,7 @@
 namespace SlmCacheTest\Listener;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit_Framework_Assert;
 
 use SlmCache\Listener\Cache as CacheListener;
 
@@ -53,9 +54,11 @@ class CacheTest extends TestCase
     public function testMatchRouteIsTriggered()
     {
         $sl   = new ServiceManager;
+        $sl->setService('Config', array());
+
         $mock = $this->getMock('SlmCache\Listener\Cache', array('matchRoute'), array($sl));
         $mock->expects($this->once())
-             ->method('matchRoute');
+            ->method('matchRoute');
 
         $em = new EventManager;
         $mock->attach($em);
@@ -68,9 +71,11 @@ class CacheTest extends TestCase
     public function testSaveRouteIsTriggered()
     {
         $sl   = new ServiceManager;
+        $sl->setService('Config', array());
+
         $mock = $this->getMock('SlmCache\Listener\Cache', array('saveRoute'), array($sl));
         $mock->expects($this->once())
-             ->method('saveRoute');
+            ->method('saveRoute');
 
         $em = new EventManager;
         $mock->attach($em);
@@ -82,7 +87,10 @@ class CacheTest extends TestCase
 
     public function testMatchReturnsNullForMissingRouteMatch()
     {
-        $listener = new CacheListener(new ServiceManager);
+        $sl = new ServiceManager;
+        $sl->setService('Config', array());
+
+        $listener = new CacheListener($sl);
 
         $event  = new MvcEvent;
         $result = $listener->matchRoute($event);
@@ -120,7 +128,7 @@ class CacheTest extends TestCase
 
         $mock = $this->getMock('SlmCache\Listener\Cache', array('fromCache'), array($sl));
         $mock->expects($this->once())
-             ->method('fromCache');
+            ->method('fromCache');
 
         $match = new RouteMatch(array());
         $match->setMatchedRouteName('home');
@@ -129,5 +137,45 @@ class CacheTest extends TestCase
         $event->setRouteMatch($match);
 
         $mock->matchRoute($event);
+    }
+
+    public function testCachePrefixIsUserDefined()
+    {
+        $config = array(
+            'slm_cache' => array(
+                'cache' => array(
+                    'cache_prefix' => 'my_cache_prefix'
+                ),
+            )
+        );
+
+        $sl = new ServiceManager;
+        $sl->setService('Config', $config);
+
+        $listener = new CacheListener($sl);
+
+        $this->assertEquals(
+            $config['slm_cache']['cache']['cache_prefix'],
+            PHPUnit_Framework_Assert::readAttribute($listener, 'cache_prefix')
+        );
+    }
+
+    public function testCachePrefixIsDefault()
+    {
+        $config = array(
+            'slm_cache' => array(
+                'cache' => array(),
+            )
+        );
+
+        $sl = new ServiceManager;
+        $sl->setService('Config', $config);
+
+        $listener = new CacheListener($sl);
+
+        $this->assertEquals(
+            'slm_cache_',
+            PHPUnit_Framework_Assert::readAttribute($listener, 'cache_prefix')
+        );
     }
 }
