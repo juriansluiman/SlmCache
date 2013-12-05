@@ -21,7 +21,7 @@ SlmCache works with Composer. To install it, just add the following line into yo
 
 ```json
 "require": {
-    "slm/cache": "dev-master"
+    "slm/cache": "~0.1"
 }
 ```
 
