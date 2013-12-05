@@ -58,7 +58,7 @@ class CacheTest extends TestCase
 
         $mock = $this->getMock('SlmCache\Listener\Cache', array('matchRoute'), array($sl));
         $mock->expects($this->once())
-            ->method('matchRoute');
+             ->method('matchRoute');
 
         $em = new EventManager;
         $mock->attach($em);
@@ -75,7 +75,7 @@ class CacheTest extends TestCase
 
         $mock = $this->getMock('SlmCache\Listener\Cache', array('saveRoute'), array($sl));
         $mock->expects($this->once())
-            ->method('saveRoute');
+             ->method('saveRoute');
 
         $em = new EventManager;
         $mock->attach($em);
