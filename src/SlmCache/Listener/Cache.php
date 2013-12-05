@@ -51,7 +51,7 @@ use Zend\Cache\Storage\StorageInterface;
 
 class Cache extends AbstractListenerAggregate
 {
-    const CACHE_PREFIX = 'slm_cache_';
+    protected $cache_prefix = 'slm_cache_';
 
     protected $match;
     protected $serviceLocator;
@@ -59,6 +59,12 @@ class Cache extends AbstractListenerAggregate
     public function __construct(ServiceLocatorInterface $sl)
     {
         $this->serviceLocator = $sl;
+
+        $config = $sl->get('Config');
+
+        if (isset($config['slm_cache']['cache_prefix'])) {
+            $this->cache_prefix = $config['slm_cache']['cache_prefix'];
+        }
     }
 
     /**
@@ -149,7 +155,7 @@ class Cache extends AbstractListenerAggregate
 
     protected function fromCache(MvcEvent $e, $match)
     {
-        $key    = self::CACHE_PREFIX . $match['route'];
+        $key    = $this->cache_prefix. $match['route'];
         $config = $match['config'];
         $cache  = $this->getCache($e);
 
@@ -167,7 +173,7 @@ class Cache extends AbstractListenerAggregate
 
     protected function storeCache(MvcEvent $e, $match)
     {
-        $key    = self::CACHE_PREFIX . $match['route'];
+        $key    = $this->cache_prefix. $match['route'];
         $config = $match['config'];
         $cache  = $this->getCache($e);
 
